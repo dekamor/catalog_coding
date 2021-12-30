@@ -22,10 +22,11 @@
 //Takes a media in put and the search parameter input
 // based on the media search it will go case by case to pick the right searching function
 
+//testing and adding extra comments
 
 
 // const axios = require('axios').default;
-
+console.log("Hello!")
 const searchResults = document.querySelector('.search-results');
 
 define(function (require){
