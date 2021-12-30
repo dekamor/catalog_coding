@@ -1,8 +1,23 @@
+// setup materialize components
+document.addEventListener('DOMContentLoaded', function() {
+
+    var modals = document.querySelectorAll('.modal');
+    M.Modal.init(modals);
+  
+    var items = document.querySelectorAll('.collapsible');
+    M.Collapsible.init(items);
+
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+  
+});
+
 
 const loggedOutLinks = document.querySelectorAll(".logged-out");
 const loggedInLinks = document.querySelectorAll(".logged-in");
 const accountDetails = document.querySelector(".account-details");
 
+// function to set up base site UI (show correct buttons when applicable)
 const setupUI = (user) => {
     if (user){
         // toggle UI elements 
@@ -18,10 +33,14 @@ const setupUI = (user) => {
 }
 
 
-const catalogList = document.querySelector('.catalog');
 //setup catalog
+//  Checkes firestore snapshot for information and if 
+//  available populates screen with info. If not available
+//  notifies user to log in
+const catalogList = document.querySelector('.catalog');
 const setupCatalog = (querySnapshot) =>{
     if(querySnapshot) {
+        // create empty HTML item to append all new items to
         let html = "";
         querySnapshot.forEach(doc => {
             const catalogItem = doc.data();
@@ -40,31 +59,19 @@ const setupCatalog = (querySnapshot) =>{
             `;
             html += li;
         })
-        catalogList.innerHTML = html;
+        catalogList.innerHTML += html;
     }
     else {
-        catalogList.innerHTML = '<h5 class="centre-align"> Login to view Catalog </h5>';
+        catalogList.innerHTML += '<h5 class="centre-align"> Login to view Catalog </h5>';
         console.log("test");
     }
-
 }
 
-// setup materialize components
-document.addEventListener('DOMContentLoaded', function() {
 
-    var modals = document.querySelectorAll('.modal');
-    M.Modal.init(modals);
-  
-    var items = document.querySelectorAll('.collapsible');
-    M.Collapsible.init(items);
-
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems);
-  
-});
-
-// Get the input field
+// Search funcionality
 var searchBar = document.getElementById("search-bar");
+var searchType = document.getElementById("search-type");
+var searchButton = document.getElementById("search-button");
 
 // Execute a function when the user releases a key on the keyboard
 searchBar.addEventListener("keyup", function(event) {
@@ -76,12 +83,20 @@ searchBar.addEventListener("keyup", function(event) {
     document.getElementById("search-button").click();
   }
 });
-var searchType = document.getElementById("search-type");
-
-var searchButton = document.getElementById("search-button");
 
 searchButton.addEventListener("click", (e) =>{
-    console.log("search triggered!");
-    console.log(searchBar.value, searchType.value);
+    // replace console.log with call to search function
+    console.log("serach title: ", searchBar.value, " search type: ", searchType.value);
+    api_search(searchType.value, searchBar.value)
 })
 
+const search = document.querySelector(".search")
+const toggleCatalogSearch = () => {
+    if (catalogList.style.display == "none") {
+        catalogList.style.display = "block";
+        search.style.display = "none";
+    } else {
+        catalogList.style.display = "none";
+        search.style.display = "block";
+    }
+  }
