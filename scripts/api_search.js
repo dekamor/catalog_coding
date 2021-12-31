@@ -202,6 +202,8 @@ async function getGameRequest(game_search) {
         let html = "";
         searchResults.innerHTML = "";
         for (let i = 0; i < search_length_games; i++) {
+
+            var genre_length = Object.keys(resp.data.results[i].genres).length;
             
             var element = {
                 category: "video_games",
@@ -216,7 +218,24 @@ async function getGameRequest(game_search) {
             } else {
                 stored_search_results[i] = element;    
                 //console.log(resp.data.results[i])
-               
+                var genre_string = 'Genre: ';
+                var genre = [];
+                var platforms_string = 'Platforms: ';
+                var platforms = [];
+                for (let j = 0; j < genre_length; j++) {
+                    genre[j] = resp.data.results[i].genres[j].name;
+                    platforms[j] = resp.data.results[i].parent_platforms[j].platform.name;
+                    if (j == genre_length-1){
+                        genre_string = genre_string + genre[j]
+                        platforms_string = platforms_string + platforms[j]
+                    } else {
+                        genre_string = genre_string+ genre[j] + ', '
+                        platforms_string = platforms_string + platforms[j] + ', '
+                    }
+                }
+                //console.log("This is the genre string : ", genre_string)
+
+
                 const li = `
                 <li>
                     <div class="collapsible-header grey lighten-4">${resp.data.results[i].name}</div>
@@ -225,6 +244,8 @@ async function getGameRequest(game_search) {
                             <div class="col s10">
                                 <p> Year released: ${resp.data.results[i].released} </p>
                                 <p> Metacritic Score: ${resp.data.results[i].metacritic} </p>
+                                <p> ${genre_string} </p>
+                                <p> ${platforms_string} </p>                               
                             </div>
                             <div class="col s2" >
                                 Enter your rating:
