@@ -57,6 +57,7 @@ const setupCatalog = (querySnapshot) =>{
         querySnapshot.forEach(doc => {
             const catalogItem = doc.data();
             var date = catalogItem.dateAdded.toDate();
+            
             const li = `
                 <li>
                     <div class="collapsible-header grey lighten-4">${catalogItem.name}</div>
