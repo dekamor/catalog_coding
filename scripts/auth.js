@@ -3,8 +3,10 @@ auth.onAuthStateChanged(user => {
     // if a user is signed in
     if(user){
         console.log('user logged in', user);
-        //initateCatalog(auth.currentUser.uid);
         setupUI(user);
+        catalogList.style.display = "none";
+        search.style.display = "block";
+        screen.innerHTML = "View Catalog";
     } 
     // if a user is signed out
     else {
@@ -61,38 +63,62 @@ loginForm.addEventListener('submit', (e) =>{
 })
 
 // function to add item to catalog (currently hard coded proof of concept) using add item button at top of page
-const addItem = document.querySelector('#add-item');
-addItem.addEventListener('click', (e) =>{
-    //console.log(auth.currentUser.uid);
-    // Writes to the collection for the specified item collection should come from category and doc from name
-    db.collection("userdata").doc(auth.currentUser.uid).collection("movies").doc("The Dark Knight Rises").set({
-        category: "movie",
+// const addItem = document.querySelector('#add-item');
+// addItem.addEventListener('click', (e) =>{
+//     //console.log(auth.currentUser.uid);
+//     // Writes to the collection for the specified item collection should come from category and doc from name
+//     db.collection("userdata").doc(auth.currentUser.uid).collection("movies").doc("The Dark Knight Rises").set({
+//         category: "movie", 
+//         dateAdded: new Date(),
+//         name: "The Dark Knight Rises",
+//         rating: 5,
+//         uniqueApiId: "test101112"
+//     }).then(() => {
+//         console.log("Document successfully written!");
+//         // updates the screen with users movie catalog
+//         // should be expanded to show all four catalogs as appropriate
+
+//         // db.collection("userdata").doc(auth.currentUser.uid).collection("movies").get().then((querySnapshot) => {
+//         //     setupCatalog(querySnapshot);
+//         //     setUpSelect();
+//         // });
+//         //initateCatalog(auth.currentUser.uid);
+
+//     })
+//     .catch((error) => {
+//         console.error("Error writing document: ", error);
+//     });
+// })
+
+const addToCatalog = (itemIndex, itemRating) => {
+    //get item details from stored_search_results
+    db.collection("userdata").doc(auth.currentUser.uid).collection(stored_search_results[itemIndex].category).doc(stored_search_results[itemIndex].name).set({
+        category: stored_search_results[itemIndex].category, 
         dateAdded: new Date(),
-        name: "The Dark Knight Rises",
-        rating: 5,
-        uniqueApiId: "test101112"
+        name: stored_search_results[itemIndex].name,
+        rating: itemRating,
+        uniqueApiId: stored_search_results[itemIndex].uniqueApiId
     }).then(() => {
         console.log("Document successfully written!");
         // updates the screen with users movie catalog
-        // should be expanded to show all four catalogs as appropriate
-        db.collection("userdata").doc(auth.currentUser.uid).collection("movies").get().then((querySnapshot) => {
-            setupCatalog(querySnapshot);
-        });
     })
     .catch((error) => {
         console.error("Error writing document: ", error);
     });
-})
+
+}
+
+
 
 
 //function to get catalog
 const getCatalog = document.querySelector('#get-catalog');
 getCatalog.addEventListener('click', (e) =>{
     toggleCatalogSearch();
-    console.log(catalogList.style.display);
     if(catalogList.style.display == "block"){
         initateCatalog(auth.currentUser.uid);
     }
+    setUpSelect();
 })
 
 // iterate through all of the catergories to get the cataloged items
@@ -102,6 +128,8 @@ const initateCatalog = (uid) => {
     categories.forEach(category => {
         db.collection("userdata").doc(uid).collection(category).get().then((querySnapshot) => {
             setupCatalog(querySnapshot);
+            if(category == "books") { setUpSelect();}     
         });
+        
     });
 }
