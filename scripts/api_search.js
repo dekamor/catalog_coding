@@ -26,14 +26,18 @@
 
 
 // const axios = require('axios').default;
-console.log("Hello!")
+
 const searchResults = document.querySelector('.search-results');
+
+var stored_search_results = [];
 
 define(function (require){
     var axios = require('axios').default;
 });
 
 function api_search(media_search, search_parameters){
+    console.log("Stored search results is ",stored_search_results);
+    stored_search_results = [];
     switch(media_search){
         case "movie":
             let movie_print_check = 0; // to account if the movie of the search item exists
@@ -78,6 +82,9 @@ function getMovieRequest(movie_name,movie_print_check) {
 
        var search_length = Object.keys(response.data.titles).length
        search_Results = response.data;
+       
+       let html = "";
+       searchResults.innerHTML = "";      
                
         for(let i = 0; i<search_length; i++ ) {
 
@@ -96,34 +103,70 @@ function getMovieRequest(movie_name,movie_print_check) {
             axios.request(filmData).then(function (filmDetails) {
 
                 //updates the outputs to include more details for the film user is searching for
-                search_Results.titles[i].year = filmDetails.data.year
-                search_Results.titles[i].lengthFilm = filmDetails.data.length
+                search_Results.titles[i].year = filmDetails.data.year;
+                search_Results.titles[i].lengthFilm = filmDetails.data.length;
                 search_Results.titles[i].details = filmDetails.data.plot;
-               
+                
+                var element = {
+                    category: "movie",
+                    dateAdded: new Date(), 
+                    name: response.data.titles[i].title,
+                    rating: 0, 
+                    uniqueApiId: response.data.titles[i].id        
+                }
+
+                //stored_search_results[i].id = response.data.titles[i].id;
+                //stored_search_results[i].name = response.data.titles[i].title;
+                
+                //stored_search_results[i].year = filmDetails.data.year;
+                //stored_search_results[i].filmLength = filmDetails.data.length;
+                //stored_search_results[i].details = filmDetails.data.plot;
+
+              
+                console.log(response.data.titles)
                // this segment checks if any plot detail exists, if it doesn't then it isn't a movie
                // if plot detail exists then it gets displayed as a results
                 if (filmDetails.data.plot == '')
                 {
                     // we don't want to do anything here we just want to pass the loop
                 } else {
+                    stored_search_results[i] = element;
+                    const li = `
+                    <li>
+                        <div class="collapsible-header grey lighten-4">${response.data.titles[i].title}</div>
+                        <div class="collapsible-body white">
+                            Year released: ${filmDetails.data.year}<br>
+                            Length of Film: ${filmDetails.data.length}<br>
+                            Plot Details: ${filmDetails.data.plot}
+                        </div>
+                    </li>
+                    `;
+                    searchResults.innerHTML +=  li;
                     console.log(search_Results.titles[i]) 
                     movie_print_check = movie_print_check+1;
                                        
                 }
                 if (i == search_length -1){
                     if (movie_print_check ==0){
+                        const li = `
+                        <li>
+                            <div class="collapsible-header grey lighten-4">No movies founds sorry!</div>
+                            
+                        </li>
+                        `;
+                        searchResults.innerHTML +=  li;
                         console.log("Sorry no movies found") // if no movie turned up in the search results then will tell user that their search result had no movie
                     }
                 }
                 
                
              }).catch(function (error) {
-                 console.error(error);
+                 console.log(error);
             });
             }
        
         }).catch(function (error) {
-	        console.error(error);
+	        console.log(error);
         });
     
 }
@@ -141,21 +184,31 @@ async function getGameRequest(game_search) {
 
         //filters games based on if they have a metacritic score or not
         var search_length_games = Object.keys(resp.data.results).length
-        console.log(search_length_games);
+        //console.log(search_length_games);
         let html = "";
         searchResults.innerHTML = "";
         for (let i = 0; i < search_length_games; i++) {
+            
+            var element = {
+                category: "video_game",
+                dateAdded: new Date(), 
+                name: resp.data.results[i].name,
+                rating: 0, 
+                uniqueApiId: resp.data.results[i].id      
+            }
+
             if (resp.data.results[i].metacritic == null) {
 
             } else {
-
-                console.log(resp.data.results[i])
-
+                stored_search_results[i] = element;    
+                //console.log(resp.data.results[i])
+               
                 const li = `
                 <li>
                     <div class="collapsible-header grey lighten-4">${resp.data.results[i].name}</div>
                     <div class="collapsible-body white">
-                        ${resp.data.results[i].released}
+                        Year released: ${resp.data.results[i].released} <br>
+                        Metacritic Score: ${resp.data.results[i].metacritic}
                     </div>
                 </li>
                 `;
@@ -191,7 +244,41 @@ function getAnimeRequest(anime_search)
         };
 
         axios.request(options).then(function (response) {
-            console.log(response.data);
+            //console.log(response.data);
+            var search_length_anime = Object.keys(response.data.results).length; 
+            let html = "";
+            searchResults.innerHTML = "";   
+            for (let i = 0; i<search_length_anime;i++){
+
+                var element = {
+                    category: "anime",
+                    dateAdded: new Date(), 
+                    name: response.data.results[i].title,
+                    rating: 0, 
+                    uniqueApiId: response.data.results[i].mal_id     
+                }
+
+                stored_search_results[i] = element;
+                const li = `
+                <li>
+                    <div class="collapsible-header grey lighten-4">${response.data.results[i].title}</div>
+                    <div class="collapsible-body white">
+                        
+                        Type: ${response.data.results[i].type} <br>
+                        Episodes: ${response.data.results[i].episodes} <br>
+                        Start Date: ${response.data.results[i].start_date} <br>
+                        End Date: ${response.data.results[i].end_date} <br>
+                        Age Rating: ${response.data.results[i].rated} <br>
+                        Synopsis: ${response.data.results[i].synopsis}
+                    </div>
+                </li>
+                `;
+                searchResults.innerHTML +=  li;       
+
+            }   
+
+
+
         }).catch(function (error) {
             console.error(error);
         });
@@ -206,7 +293,38 @@ async function getBookRequest(book_search) {
     // var axios = require("axios").default;
     try {
         const resp = await axios.get("https://www.googleapis.com/books/v1/volumes?q="+book_search+"+intitle:"+book_search+"&key=AIzaSyDI3nIN4E-fMptBiG01xkTRHybXOcODjEk")
-                console.log(resp.data.items)
+                //console.log(resp.data.items)
+                var search_length_book = Object.keys(resp.data.items).length; 
+                let html = "";
+                searchResults.innerHTML = "";   
+                for (let i = 0; i<search_length_book;i++){
+    
+                    var element = {
+                        category: "book",
+                        dateAdded: new Date(), 
+                        name: resp.data.items[i].volumeInfo.title,
+                        rating: 0, 
+                        uniqueApiId: resp.data.items[i].id     
+                    }
+
+                    stored_search_results[i] = element;
+                const li = `
+                <li>
+                    <div class="collapsible-header grey lighten-4">${resp.data.items[i].volumeInfo.title}</div>
+                    <div class="collapsible-body white">
+                        
+                        Author(s): ${resp.data.items[i].volumeInfo.authors} <br>
+                        Publisher: ${resp.data.items[i].volumeInfo.publisher} <br>
+                        Date Published: ${resp.data.items[i].volumeInfo.publishedDate} <br>
+                        Description: ${resp.data.items[i].volumeInfo.description} <br>
+                        
+                    </div>
+                </li>
+                `;
+                searchResults.innerHTML +=  li;   
+
+                }
+
                                
     }
     catch(err) {
