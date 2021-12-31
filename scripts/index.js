@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+const setUpSelect = () => {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+}
+
+
 const loggedOutLinks = document.querySelectorAll(".logged-out");
 const loggedInLinks = document.querySelectorAll(".logged-in");
 const accountDetails = document.querySelector(".account-details");
@@ -44,28 +50,55 @@ const setupCatalog = (querySnapshot) =>{
         let html = "";
         querySnapshot.forEach(doc => {
             const catalogItem = doc.data();
-            console.log("TESTING:", catalogItem);
             var date = catalogItem.dateAdded.toDate();
             const li = `
                 <li>
                     <div class="collapsible-header grey lighten-4">${catalogItem.name}</div>
                     <div class="collapsible-body white">
-                        ${catalogItem.rating} 
-                        ${catalogItem.category}
-                        ${catalogItem.uniqueApiId}
-                        ${date}
+                        <div class="row">
+                            <div class="col s10">
+                                ${catalogItem.rating} 
+                                ${catalogItem.category}
+                                ${catalogItem.uniqueApiId}
+                                ${date}
+                            </div>
+                            <div class="col s2" >
+                                <a class="waves-effect waves-light btn-small" id="${catalogItem.name}" onClick="dummyAdd(this.id)">add item</a>
+                                <select id="rating${catalogItem.name}" >
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3" selected="selected">3</option>
+                                    <option value="4">4</option>    
+                                    <option value="5">5</option>
+                                </select>
+                            </div>git 
+                        </div>
                     </div>
                 </li>
             `;
             html += li;
         })
         catalogList.innerHTML += html;
+        
+           
     }
     else {
-        catalogList.innerHTML += '<h5 class="centre-align"> Login to view Catalog </h5>';
-        console.log("test");
+        catalogList.innerHTML = '';
     }
+    
+    
 }
+
+const dummyAdd = (id) => {
+    console.log("Button Clicked: ", id);
+    var rating  = "rating" + id;
+    const currentRating = document.getElementById(rating);
+    console.log("current rating ", currentRating.value);
+
+    // functionality for actual implementation
+    // addToCatalog(id, rating);
+}
+
 
 
 // Search funcionality
@@ -86,17 +119,21 @@ searchBar.addEventListener("keyup", function(event) {
 
 searchButton.addEventListener("click", (e) =>{
     // replace console.log with call to search function
-    console.log("serach title: ", searchBar.value, " search type: ", searchType.value);
-    api_search(searchType.value, searchBar.value)
+    console.log("search title: ", searchBar.value, " search type: ", searchType.value);
+    api_search(searchType.value, searchBar.value);
 })
 
-const search = document.querySelector(".search")
+const search = document.querySelector(".search");
+const screen = document.getElementById("get-catalog");
+
 const toggleCatalogSearch = () => {
     if (catalogList.style.display == "none") {
         catalogList.style.display = "block";
         search.style.display = "none";
+        screen.innerHTML = "View Search";
     } else {
         catalogList.style.display = "none";
         search.style.display = "block";
+        screen.innerHTML = "View Catalog";
     }
   }
