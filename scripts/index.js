@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
 });
 
+document.addEventListener('loaded', function() {
+
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+  
+});
 
 const setUpSelect = () => {
     var elems = document.querySelectorAll('select');
@@ -56,22 +62,10 @@ const setupCatalog = (querySnapshot) =>{
                     <div class="collapsible-header grey lighten-4">${catalogItem.name}</div>
                     <div class="collapsible-body white">
                         <div class="row">
-                            <div class="col s10">
-                                ${catalogItem.rating} 
-                                ${catalogItem.category}
-                                ${catalogItem.uniqueApiId}
-                                ${date}
-                            </div>
-                            <div class="col s2" >
-                                <a class="waves-effect waves-light btn-small" id="${catalogItem.name}" onClick="dummyAdd(this.id)">add item</a>
-                                <select id="rating${catalogItem.name}" >
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3" selected="selected">3</option>
-                                    <option value="4">4</option>    
-                                    <option value="5">5</option>
-                                </select>
-                            </div>git 
+                            ${catalogItem.rating} 
+                            ${catalogItem.category}
+                            ${catalogItem.uniqueApiId}
+                            ${date}
                         </div>
                     </div>
                 </li>
@@ -91,12 +85,15 @@ const setupCatalog = (querySnapshot) =>{
 
 const dummyAdd = (id) => {
     console.log("Button Clicked: ", id);
+    console.log("name of thing: ", stored_search_results[id].name)
     var rating  = "rating" + id;
     const currentRating = document.getElementById(rating);
+
+
     console.log("current rating ", currentRating.value);
 
     // functionality for actual implementation
-    // addToCatalog(id, rating);
+    addToCatalog(id, currentRating.value);
 }
 
 

@@ -91,13 +91,14 @@ loginForm.addEventListener('submit', (e) =>{
 // })
 
 const addToCatalog = (itemIndex, itemRating) => {
+    console.log(itemRating);
     //get item details from stored_search_results
-    db.collection("userdata").doc(auth.currentUser.uid).collection(stored_search_results[itemIndex].category).doc(stored_search_results[itemIndex].name).set({
-        category: stored_search_results[itemIndex].category, 
+    db.collection("userdata").doc(auth.currentUser.uid).collection(stored_search_results[itemIndex].category.toString()).doc(stored_search_results[itemIndex].name.toString()).set({
+        category: stored_search_results[itemIndex].category.toString(), 
         dateAdded: new Date(),
-        name: stored_search_results[itemIndex].name,
+        name: stored_search_results[itemIndex].name.toString(),
         rating: itemRating,
-        uniqueApiId: stored_search_results[itemIndex].uniqueApiId
+        uniqueApiId: stored_search_results[itemIndex].uniqueApiId.toString()
     }).then(() => {
         console.log("Document successfully written!");
         // updates the screen with users movie catalog

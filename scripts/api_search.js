@@ -108,7 +108,7 @@ function getMovieRequest(movie_name,movie_print_check) {
                 search_Results.titles[i].details = filmDetails.data.plot;
                 
                 var element = {
-                    category: "movie",
+                    category: "movies",
                     dateAdded: new Date(), 
                     name: response.data.titles[i].title,
                     rating: 0, 
@@ -135,9 +135,21 @@ function getMovieRequest(movie_name,movie_print_check) {
                     <li>
                         <div class="collapsible-header grey lighten-4">${response.data.titles[i].title}</div>
                         <div class="collapsible-body white">
-                            Year released: ${filmDetails.data.year}<br>
-                            Length of Film: ${filmDetails.data.length}<br>
-                            Plot Details: ${filmDetails.data.plot}
+                            <div class="row">
+                                <div class="col s10" >
+                                    Year released: ${filmDetails.data.year}<br>
+                                    Length of Film: ${filmDetails.data.length}<br>
+                                    Plot Details: ${filmDetails.data.plot}
+                                </div>
+                                <div class="col s2" >
+                                    Enter your rating:
+                                    <p class="range-field">
+                                        <input type="range" value="1" min="1" max="10" oninput="this.nextElementSibling.value = this.value" id="rating${i}">
+                                        <output>1</output>
+                                    </p>
+                                    <a class="waves-effect waves-light btn-small" id="${i}" onClick="dummyAdd(this.id)">add item</a>
+                                </div> 
+                            </div>
                         </div>
                     </li>
                     `;
@@ -147,6 +159,7 @@ function getMovieRequest(movie_name,movie_print_check) {
                                        
                 }
                 if (i == search_length -1){
+
                     if (movie_print_check ==0){
                         const li = `
                         <li>
@@ -163,6 +176,7 @@ function getMovieRequest(movie_name,movie_print_check) {
              }).catch(function (error) {
                  console.log(error);
             });
+            
             }
        
         }).catch(function (error) {
@@ -190,11 +204,11 @@ async function getGameRequest(game_search) {
         for (let i = 0; i < search_length_games; i++) {
             
             var element = {
-                category: "video_game",
+                category: "video_games",
                 dateAdded: new Date(), 
                 name: resp.data.results[i].name,
                 rating: 0, 
-                uniqueApiId: resp.data.results[i].id      
+                uniqueApiId: resp.data.results[i].id.toString()      
             }
 
             if (resp.data.results[i].metacritic == null) {
@@ -207,8 +221,20 @@ async function getGameRequest(game_search) {
                 <li>
                     <div class="collapsible-header grey lighten-4">${resp.data.results[i].name}</div>
                     <div class="collapsible-body white">
-                        Year released: ${resp.data.results[i].released} <br>
-                        Metacritic Score: ${resp.data.results[i].metacritic}
+                        <div class="row">
+                            <div class="col s10">
+                                <p> Year released: ${resp.data.results[i].released} </p>
+                                <p> Metacritic Score: ${resp.data.results[i].metacritic} </p>
+                            </div>
+                            <div class="col s2" >
+                                Enter your rating:
+                                <p class="range-field">
+                                    <input type="range" value="1" min="1" max="10" oninput="this.nextElementSibling.value = this.value" id="rating${i}">
+                                    <output>1</output>
+                                </p>
+                                <a class="waves-effect waves-light btn-small" id="${i}" onClick="dummyAdd(this.id)">add item</a>
+                            </div>
+                        </div>
                     </div>
                 </li>
                 `;
@@ -263,13 +289,24 @@ function getAnimeRequest(anime_search)
                 <li>
                     <div class="collapsible-header grey lighten-4">${response.data.results[i].title}</div>
                     <div class="collapsible-body white">
-                        
-                        Type: ${response.data.results[i].type} <br>
-                        Episodes: ${response.data.results[i].episodes} <br>
-                        Start Date: ${response.data.results[i].start_date} <br>
-                        End Date: ${response.data.results[i].end_date} <br>
-                        Age Rating: ${response.data.results[i].rated} <br>
-                        Synopsis: ${response.data.results[i].synopsis}
+                        <div class="row">
+                            <div class="col s10" >
+                                Type: ${response.data.results[i].type} <br>
+                                Episodes: ${response.data.results[i].episodes} <br>
+                                Start Date: ${response.data.results[i].start_date} <br>
+                                End Date: ${response.data.results[i].end_date} <br>
+                                Age Rating: ${response.data.results[i].rated} <br>
+                                Synopsis: ${response.data.results[i].synopsis}
+                            </div>
+                            <div class="col s2" >
+                                Enter your rating:
+                                <p class="range-field">
+                                    <input type="range" value="1" min="1" max="10" oninput="this.nextElementSibling.value = this.value" id="rating${i}">
+                                    <output>1</output>
+                                </p>
+                                <a class="waves-effect waves-light btn-small" id="${i}" onClick="dummyAdd(this.id)">add item</a>
+                            </div> 
+                        </div>
                     </div>
                 </li>
                 `;
@@ -300,7 +337,7 @@ async function getBookRequest(book_search) {
                 for (let i = 0; i<search_length_book;i++){
     
                     var element = {
-                        category: "book",
+                        category: "books",
                         dateAdded: new Date(), 
                         name: resp.data.items[i].volumeInfo.title,
                         rating: 0, 
@@ -312,12 +349,22 @@ async function getBookRequest(book_search) {
                 <li>
                     <div class="collapsible-header grey lighten-4">${resp.data.items[i].volumeInfo.title}</div>
                     <div class="collapsible-body white">
-                        
-                        Author(s): ${resp.data.items[i].volumeInfo.authors} <br>
-                        Publisher: ${resp.data.items[i].volumeInfo.publisher} <br>
-                        Date Published: ${resp.data.items[i].volumeInfo.publishedDate} <br>
-                        Description: ${resp.data.items[i].volumeInfo.description} <br>
-                        
+                        <div class="row">
+                            <div class="col s10">
+                                Author(s): ${resp.data.items[i].volumeInfo.authors} <br>
+                                Publisher: ${resp.data.items[i].volumeInfo.publisher} <br>
+                                Date Published: ${resp.data.items[i].volumeInfo.publishedDate} <br>
+                                Description: ${resp.data.items[i].volumeInfo.description} <br>
+                            </div>
+                            <div class="col s2" >
+                                Enter your rating:
+                                <p class="range-field">
+                                    <input type="range" value="1" min="1" max="10" oninput="this.nextElementSibling.value = this.value" id="rating${i}">
+                                    <output>1</output>
+                                </p>
+                                <a class="waves-effect waves-light btn-small" id="${i}" onClick="dummyAdd(this.id)">add item</a>
+                            </div>
+                        </div> 
                     </div>
                 </li>
                 `;
