@@ -57,16 +57,25 @@ const setupCatalog = (querySnapshot) =>{
         querySnapshot.forEach(doc => {
             const catalogItem = doc.data();
             var date = catalogItem.dateAdded.toDate();
-            
+            var colour = "grey";
+            switch(catalogItem.category){
+                case "books":
+                    colour = "blue";
+                    break;
+                case "video_games":
+                    colour = "green";
+                    break;
+                case "movies":
+                    colour = "red";
+                    break;
+            }
             const li = `
                 <li>
-                    <div class="collapsible-header grey lighten-4">${catalogItem.name}</div>
+                    <div class="collapsible-header ${colour} lighten-4">${catalogItem.name}</div>
                     <div class="collapsible-body white">
                         <div class="row">
-                            ${catalogItem.rating} 
-                            ${catalogItem.category}
-                            ${catalogItem.uniqueApiId}
-                            ${date}
+                            <p> Your rating: ${catalogItem.rating} </p>
+                            <p> Date Added: ${date.toLocaleDateString('en-US')} </p>
                         </div>
                     </div>
                 </li>

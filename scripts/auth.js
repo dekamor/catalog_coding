@@ -62,33 +62,6 @@ loginForm.addEventListener('submit', (e) =>{
     })
 })
 
-// function to add item to catalog (currently hard coded proof of concept) using add item button at top of page
-// const addItem = document.querySelector('#add-item');
-// addItem.addEventListener('click', (e) =>{
-//     //console.log(auth.currentUser.uid);
-//     // Writes to the collection for the specified item collection should come from category and doc from name
-//     db.collection("userdata").doc(auth.currentUser.uid).collection("movies").doc("The Dark Knight Rises").set({
-//         category: "movie", 
-//         dateAdded: new Date(),
-//         name: "The Dark Knight Rises",
-//         rating: 5,
-//         uniqueApiId: "test101112"
-//     }).then(() => {
-//         console.log("Document successfully written!");
-//         // updates the screen with users movie catalog
-//         // should be expanded to show all four catalogs as appropriate
-
-//         // db.collection("userdata").doc(auth.currentUser.uid).collection("movies").get().then((querySnapshot) => {
-//         //     setupCatalog(querySnapshot);
-//         //     setUpSelect();
-//         // });
-//         //initateCatalog(auth.currentUser.uid);
-
-//     })
-//     .catch((error) => {
-//         console.error("Error writing document: ", error);
-//     });
-// })
 
 const addToCatalog = (itemIndex, itemRating) => {
     console.log(itemRating);
@@ -108,9 +81,6 @@ const addToCatalog = (itemIndex, itemRating) => {
     });
 
 }
-
-
-
 
 //function to get catalog
 const getCatalog = document.querySelector('#get-catalog');
